@@ -19,22 +19,24 @@ dnf -y install \
 	azurelinux-sysinfo
 
 # Install Azure Linux kernel
-# dnf -y remove --noautoremove \
-#	kernel \
-#	kernel-core \
-#	kernel-modules \
-#	kernel-modules-core \
-#	kernel-modules-extra
+dnf -y remove --noautoremove \
+	kernel \
+	kernel-core \
+	kernel-modules \
+	kernel-modules-core \
+	kernel-modules-extra
 
-#dnf -y install \
-#	kernel \
-#	kernel-drivers-gpu \
-#	kernel-drivers-intree-amdgpu \
-#	kernel-drivers-sound \
-#	kernel-uki
+dnf -y install \
+	kernel \
+	kernel-drivers-gpu \
+	kernel-drivers-intree-amdgpu \
+	kernel-drivers-sound \
+	kernel-drivers-accessibility \
+	kernel-uki \
+	kernel-uvm
 
 # Rebuild initramfs
-# QUALIFIED_KERNEL="$(dnf repoquery --installed --qf '%{evr}.%{arch}' "kernel")"
-#/usr/bin/dracut --no-hostonly --kver "$QUALIFIED_KERNEL" --reproducible --zstd -v --add ostree -f "/usr/lib/modules/$QUALIFIED_KERNEL/initramfs.img"
+QUALIFIED_KERNEL="$(dnf repoquery --installed --qf '%{evr}' "kernel")"
+/usr/bin/dracut --no-hostonly --kver "$QUALIFIED_KERNEL" --reproducible --zstd -v --add ostree -f "/usr/lib/modules/$QUALIFIED_KERNEL/initramfs.img"
 
-# chmod 0600 /usr/lib/modules/"$QUALIFIED_KERNEL"/initramfs.img
+chmod 0600 /usr/lib/modules/"$QUALIFIED_KERNEL"/initramfs.img
