@@ -1,0 +1,7 @@
+[azurelinux-ms-oss]
+name=Azure Linux Official Microsoft Open-Source $releasever $basearch
+baseurl=https://packages.microsoft.com/azurelinux/$releasever/prod/ms-oss/$basearch
+gpgcheck=0
+enabled=1
+skip_if_unavailable=True
+sslverify=1
