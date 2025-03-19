@@ -35,11 +35,11 @@ dnf5 -y install \
 	kernel-drivers-intree-amdgpu \
 	kernel-drivers-sound \
 	kernel-drivers-accessibility \
-	kernel-uki \
 	kernel-uvm
 
 # Rebuild initramfs
 QUALIFIED_KERNEL="$(dnf5 repoquery --installed --queryformat='%{evr}' "kernel")"
+mv /boot/vmlinuz-"$QUALIFIED_KERNEL" /usr/lib/modules/"$QUALIFIED_KERNEL"/vmlinuz
 /usr/bin/dracut --no-hostonly --kver "$QUALIFIED_KERNEL" --reproducible --zstd -v --add ostree -f "/usr/lib/modules/$QUALIFIED_KERNEL/initramfs.img"
 
 chmod 0600 /usr/lib/modules/"$QUALIFIED_KERNEL"/initramfs.img
