@@ -2,13 +2,16 @@
 
 set -ouex pipefail
 
+# Switch to dnf5
+dnf -y install dnf5
+
 # Remove fedora-release packages (with nodeps), then immeidately install the mariner replacement
 rpm -ev $(rpm -qa | grep ^fedora-) --nodeps
 rpm -iv https://packages.microsoft.com/yumrepos/azurelinux-3.0-prod-base-x86_64/Packages/a/azurelinux-release-3.0-25.azl3.noarch.rpm
 
 # Install Azure Linux packages/repositories
 # Note that some cannot be installed due to bzip2 versioning differences breaking bootc at this time.
-dnf -y install \
+dnf5 -y install \
 	azurelinux-repos \
 	azurelinux-repos-amd \
 	azurelinux-repos-extended \
@@ -19,14 +22,14 @@ dnf -y install \
 	azurelinux-sysinfo
 
 # Install Azure Linux kernel
-dnf -y remove --noautoremove \
+dnf5 -y remove --no-autoremove \
 	kernel \
 	kernel-core \
 	kernel-modules \
 	kernel-modules-core \
 	kernel-modules-extra
 
-dnf -y install \
+dnf5 -y install \
 	kernel \
 	kernel-drivers-gpu \
 	kernel-drivers-intree-amdgpu \
@@ -36,10 +39,10 @@ dnf -y install \
 	kernel-uvm
 
 # Rebuild initramfs
-QUALIFIED_KERNEL_NOARCH="$(dnf repoquery --installed --qf '%{evr}' "kernel")"
-QUALIFIED_KERNEL="$(dnf repoquery --installed --qf '%{evr}.%{arch}' "kernel")"
-mv /usr/lib/modules/"$QUALIFIED_KERNEL_NOARCH" /usr/lib/modules/"$QUALIFIED_KERNEL"
-
+QUALIFIED_KERNEL="$(dnf5 repoquery --installed --queryformat='%{evr}' "kernel")"
 /usr/bin/dracut --no-hostonly --kver "$QUALIFIED_KERNEL" --reproducible --zstd -v --add ostree -f "/usr/lib/modules/$QUALIFIED_KERNEL/initramfs.img"
 
 chmod 0600 /usr/lib/modules/"$QUALIFIED_KERNEL"/initramfs.img
+
+# Check for faults
+bootc container lint
