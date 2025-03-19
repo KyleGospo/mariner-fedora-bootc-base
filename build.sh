@@ -36,7 +36,10 @@ dnf -y install \
 	kernel-uvm
 
 # Rebuild initramfs
-QUALIFIED_KERNEL="$(dnf repoquery --installed --qf '%{evr}' "kernel")"
+QUALIFIED_KERNEL_NOARCH="$(dnf repoquery --installed --qf '%{evr}' "kernel")"
+QUALIFIED_KERNEL="$(dnf repoquery --installed --qf '%{evr}.%{arch}' "kernel")"
+mv /usr/lib/modules/"$QUALIFIED_KERNEL_NOARCH" /usr/lib/modules/"$QUALIFIED_KERNEL"
+
 /usr/bin/dracut --no-hostonly --kver "$QUALIFIED_KERNEL" --reproducible --zstd -v --add ostree -f "/usr/lib/modules/$QUALIFIED_KERNEL/initramfs.img"
 
 chmod 0600 /usr/lib/modules/"$QUALIFIED_KERNEL"/initramfs.img
