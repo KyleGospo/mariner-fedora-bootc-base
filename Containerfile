@@ -1,4 +1,4 @@
-FROM quay.io/fedora/fedora-bootc:41
+FROM quay.io/fedora/fedora-bootc:40
 
 COPY build.sh /tmp/build.sh
 COPY system_files /
