@@ -11,5 +11,6 @@ RUN --mount=type=cache,dst=/var/cache/libdnf5 \
     --mount=type=tmpfs,dst=/tmp \
     --mount=type=tmpfs,dst=/boot \
     /ctx/build.sh && \
-    ostree container commit && \
-    bootc container lint
+    ostree container commit
+
+RUN bootc container lint
