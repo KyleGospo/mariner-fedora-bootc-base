@@ -6,6 +6,7 @@ set -ouex pipefail
 dnf -y install dnf5
 
 # Remove fedora-release packages (with nodeps), then immeidately install the mariner replacement
+# This must be a direct RPM URL because we're unable to use the azure linux repos without a valid version in os-release. It'll get updated in the next step.
 rpm -ev $(rpm -qa | grep ^fedora-) --nodeps
 rpm -iv https://packages.microsoft.com/yumrepos/azurelinux-3.0-prod-base-x86_64/Packages/a/azurelinux-release-3.0-25.azl3.noarch.rpm
 
@@ -37,12 +38,11 @@ dnf5 -y install \
 	kernel-drivers-accessibility \
 	kernel-uvm
 
-# Rebuild initramfs
+# Flatten the kernel, bootc doesn't use /boot
 QUALIFIED_KERNEL="$(dnf5 repoquery --installed --queryformat='%{evr}' "kernel")"
 mv /boot/vmlinuz-"$QUALIFIED_KERNEL" /usr/lib/modules/"$QUALIFIED_KERNEL"/vmlinuz
+
+# Rebuild initramfs
 /usr/bin/dracut --no-hostonly --kver "$QUALIFIED_KERNEL" --reproducible --zstd -v --add ostree -f "/usr/lib/modules/$QUALIFIED_KERNEL/initramfs.img"
 
 chmod 0600 /usr/lib/modules/"$QUALIFIED_KERNEL"/initramfs.img
-
-# Check for faults
-bootc container lint

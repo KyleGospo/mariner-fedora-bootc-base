@@ -5,5 +5,5 @@ COPY system_files /
 
 RUN mkdir -p /var/lib/alternatives && \
     /tmp/build.sh && \
-    ostree container commit
-    
+    ostree container commit && \
+    bootc container lint

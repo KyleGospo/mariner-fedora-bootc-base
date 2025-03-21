@@ -1,7 +1,0 @@
-[azurelinux-ms-non-oss]
-name=Azure Linux Official Microsoft Non-Open-Source $releasever $basearch
-baseurl=https://packages.microsoft.com/azurelinux/$releasever/prod/ms-non-oss/$basearch
-gpgcheck=0
-enabled=1
-skip_if_unavailable=True
-sslverify=1
