@@ -1,7 +1,7 @@
 FROM scratch AS ctx
 COPY build_files /
 
-FROM quay.io/fedora/fedora-bootc:40
+FROM quay.io/fedora/fedora-bootc:45@sha256:4ded9b20e4988ed4eca8e336b0aafe7340788d1d1fc82f88e8ef381eea671bb4
 
 COPY system_files /
 
